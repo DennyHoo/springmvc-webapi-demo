@@ -1,0 +1,73 @@
+package com.cqgs.app.controller;
+
+import com.cqgs.app.controller.handler.FormArgsException;
+import com.cqgs.app.form.TestForm;
+import com.cqgs.app.vo.ApiResponse;
+import com.cqgs.app.vo.ResponseStatus;
+import com.sun.tools.internal.xjc.reader.xmlschema.BindRed;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Handles requests for the application home page.
+ */
+@Controller
+public class HomeController extends BaseController {
+
+    /**
+     *
+     * @return
+     */
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String home() {
+        return "home";
+    }
+
+    /**
+     * 测试webapi响应结果
+     * @return
+     */
+	@RequestMapping(value = "/hello", method = RequestMethod.GET)
+    @ResponseBody
+	public ApiResponse hello() {
+        int[] arr = {1,2,3,4,5,6};
+		return new ApiResponse.Builder(ResponseStatus.SUCCESS).message("ok！").content("data", "ok").content("list",arr).build();
+	}
+
+    /**
+     * 测试全局异常拦截
+     * @return
+     */
+    @RequestMapping("/testError")
+    @ResponseBody
+    public int testError(){
+        return Integer.parseInt("error");
+    }
+
+    /**
+     * 测试提交参数错误
+     * @param form
+     * @param result
+     * @return
+     * @throws FormArgsException
+     */
+    @RequestMapping("/testForm")
+    @ResponseBody
+    public ApiResponse testForm(@Valid TestForm form,BindingResult result) throws FormArgsException {
+
+        if(result.hasErrors()){
+            throw FormArgsException.formatFormArgsErrors(result);
+        }
+
+        return new ApiResponse.Builder(ResponseStatus.SUCCESS).message("ok！").build();
+    }
+	
+}

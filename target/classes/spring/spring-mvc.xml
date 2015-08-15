@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:task="http://www.springframework.org/schema/task"
+             xmlns:mvc="http://www.springframework.org/schema/mvc"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Enables the Spring MVC @Controller programming model -->
+    <context:component-scan base-package="com.cqgs.app" />
+
+    <annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <beans:bean
+                    class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <beans:property name="supportedMediaTypes" value="text/html;charset=UTF-8" />
+                <beans:property name="features">
+                    <beans:array>
+                        <!-- 是否输出值为null的字段,默认为false -->
+                        <beans:value>WriteMapNullValue</beans:value>
+                        <!-- 数值字段如果为null,输出为0,而非null -->
+                        <beans:value>WriteNullNumberAsZero</beans:value>
+                        <!-- List字段如果为null,输出为[],而非null -->
+                        <beans:value>WriteNullListAsEmpty</beans:value>
+                        <!-- 字符类型字段如果为null,输出为"",而非null -->
+                        <beans:value>WriteNullStringAsEmpty</beans:value>
+                        <!-- Boolean字段如果为null,输出为false,而非null -->
+                        <beans:value>WriteNullBooleanAsFalse</beans:value>
+                        <!-- Date字段如果为null,输出为0,而非null -->
+                        <beans:value>WriteNullDateAsZero</beans:value>
+                    </beans:array>
+                </beans:property>
+            </beans:bean>
+        </mvc:message-converters>
+    </annotation-driven>
+
+    <!-- 拦截器配置，拦截顺序：先执行后定义的，排在第一位的最后执行。-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**" />
+            <beans:bean class="com.cqgs.app.interceptor.LogInterceptor" />
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/**" />
+            <mvc:exclude-mapping path="/login"/>
+            <mvc:exclude-mapping path="/regist"/>
+            <mvc:exclude-mapping path="/hello"/>
+            <beans:bean class="com.cqgs.app.interceptor.RequestTokenInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<!--<resources mapping="/resources/**" location="/resources/" />-->
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+</beans:beans>

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="fastjson-cinyi-1.0">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/fastjson-cinyi-1.0.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
